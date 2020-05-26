@@ -92,18 +92,17 @@ class Covid_Statistics:
         if sides == 'both':
             return sides, percent, m - h, m + h
 
-test = Covid_Statistics()
-
-test.parcer(r'C:/Users/HP/Desktop/covid_statistics.csv', 'RUS')
-key = 'total_deaths'
-print('---keys---', test.keys())
-print('---sample_mean---', test.sample_mean(key))
-print('---sample_variance---', test.sample_variance(key))
-print('---quantile---', test.quantile(key, 0.7))
-test.emp_distr_func(key)
-test.histogram(key)
-test.kde(key)
-print('---confid_int---', test.confid_int(key, 'both', 0.95))
+#test = Covid_Statistics()
+#test.parcer(r'C:/Users/HP/Desktop/covid_statistics.csv', 'RUS')
+#key = 'total_deaths'
+#print('---keys---', test.keys())
+#print('---sample_mean---', test.sample_mean(key))
+#print('---sample_variance---', test.sample_variance(key))
+#print('---quantile---', test.quantile(key, 0.7))
+#test.emp_distr_func(key)
+#test.histogram(key)
+#test.kde(key)
+#print('---confid_int---', test.confid_int(key, 'both', 0.95))
 
 class Test_Covid_Statistics(unittest.TestCase):
 
