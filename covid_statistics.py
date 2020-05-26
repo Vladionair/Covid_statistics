@@ -1,7 +1,11 @@
 from collections import defaultdict
+from scipy.stats import gaussian_kde
 import csv
+import scipy
 import unittest
-import matplotlib
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns; sns.set()
 
 class Covid_Statistics:
 
@@ -26,52 +30,93 @@ class Covid_Statistics:
         return self.parced.keys()
 
     def sample_mean(self, key):
+        if type(self.parced[key][0]) is str:
+            raise Exception('Data is string, not numbers!')
         return sum(self.parced[key]) / (len(self.parced[key]))
 
     def sample_variance(self, key):
+        if type(self.parced[key][0]) is str:
+            raise Exception('Data is string, not numbers!')
         return sum([(self.parced[key][i] - (sum(self.parced[key])) / len(self.parced[key])) ** 2 for i in range(len(self.parced[key]))]) / len(self.parced[key])
 
+
     def quantile(self, key, k):
-        return sorted(self.parced[key])[int((len(self.parced[key])-1) * k)]
+        if type(self.parced[key][0]) is str:
+            raise Exception('Data is string, not numbers!')
+        return sorted(self.parced[key])[int((len(self.parced[key]) - 1) * k)]
+
 
     def emp_distr_func(self, key):
-        return [self.parced[key].count(i) / len(set(self.parced[key])) for i in self.parced[key]]
+        if type(self.parced[key][0]) is str:
+            raise Exception('Data is string, not numbers!')
+        levels = np.linspace(0, 1, len(self.parced[key]))
+        plt.title(key)
+        plt.xlabel('values')
+        plt.ylabel('probability')
+        plt.step(sorted(self.parced[key]), levels)
+        plt.show()
 
-    def histogram(self, key, n):
-        steps = [(max(self.parced[key])-min(self.parced[key]))*(col/(n-1)) for col in range(1, n)]
-        limit = 0
-        result = []
-        for i in range(len(steps)):
-            for j in range(limit, len(self.parced[key])):
-                if self.parced[key][j] > steps[i]:
-                    result.append(self.parced[key][limit:j])
-                    limit = j
-                    break
-        result.append(self.parced[key][limit:])
-        return [len(result[i])/len(self.parced[key]) for i in range(len(result))]
+    def histogram(self, key):
+        if type(self.parced[key][0]) is str:
+            raise Exception('Data is string, not numbers!')
+        plt.title(key)
+        plt.xlabel('values')
+        plt.ylabel('probability')
+        plt.hist(self.parced[key])
+        plt.show()
 
-#test = Covid_Statistics()
-#test.parcer(r'C:\Users\HP\Desktop\covid_stat.csv', 'RUS')
+    def kde(self, key):
+        if type(self.parced[key][0]) is str:
+            raise Exception('Data is string, not numbers!')
+        density = gaussian_kde(self.parced[key])
+        xs = np.linspace(0, 1000, 100)
+        density.covariance_factor = lambda: .25
+        density._compute_covariance()
+        plt.xlabel('values')
+        plt.ylabel('probability')
+        plt.title(key)
+        plt.plot(xs, density(xs))
+        plt.show()
+
+    def confid_int(self, key, sides, percent):
+        if type(self.parced[key][0]) is str:
+            raise Exception('Data is string, not numbers!')
+        n = len(self.parced[key])
+        m = np.mean(self.parced[key])
+        se = scipy.stats.sem(self.parced[key])
+        h = se * scipy.stats.t.ppf((1 + percent) / 2, n - 1)
+        if sides == 'left':
+            return sides, percent, m - h
+        if sides == 'right':
+            return sides, percent, m + h
+        if sides == 'both':
+            return sides, percent, m - h, m + h
+
+test = Covid_Statistics()
+
+test.parcer(r'C:/Users/HP/Desktop/covid_statistics.csv', 'RUS')
+key = 'total_deaths'
+print('---keys---', test.keys())
+print('---sample_mean---', test.sample_mean(key))
+print('---sample_variance---', test.sample_variance(key))
+print('---quantile---', test.quantile(key, 0.7))
+test.emp_distr_func(key)
+test.histogram(key)
+test.kde(key)
+print('---confid_int---', test.confid_int(key, 'both', 0.95))
 
 class Test_Covid_Statistics(unittest.TestCase):
 
     def test_sample_mean(self):
-        self.assertEqual(test.sample_mean(list), 3)
+        self.assertEqual(test.sample_mean('list'), 3)
 
     def test_sample_variance(self):
-        self.assertEqual(test.sample_variance(list), 2)
+        self.assertEqual(test.sample_variance('list'), 2)
 
     def test_quantile(self):
-        self.assertEqual(test.quantile(list, 0.5), 3)
+        self.assertEqual(test.quantile('list', 0.5), 3)
 
-    def test_emp_distr_func(self):
-        self.assertEqual(test.emp_distr_func(list), [0.2, 0.2, 0.2, 0.2, 0.2])
-
-    def test_histogram(self):
-        self.assertEqual(test.histogram(list, 5), [0.2, 0.2, 0.2, 0.2, 0.2])
-
-if __name__ == '__main__':
-    test = Covid_Statistics()
-    test.parced[list].extend([1, 2, 3, 4, 5])
-    unittest.main(verbosity=2)
-
+#if __name__ == '__main__':
+#    test = Covid_Statistics()
+#    test.parced['list'].extend([1, 2, 3, 4, 5])
+#    unittest.main(verbosity=2)
