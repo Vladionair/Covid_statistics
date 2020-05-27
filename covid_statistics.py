@@ -54,7 +54,9 @@ class Covid_Statistics:
         plt.xlabel('values')
         plt.ylabel('probability')
         plt.step(sorted(self.parced[key]), levels)
-        plt.show()
+        plt.show(block=False)
+        plt.pause(3)
+        plt.close()
 
     def histogram(self, key):
         if type(self.parced[key][0]) is str:
@@ -63,7 +65,9 @@ class Covid_Statistics:
         plt.xlabel('values')
         plt.ylabel('probability')
         plt.hist(self.parced[key])
-        plt.show()
+        plt.show(block=False)
+        plt.pause(3)
+        plt.close()
 
     def kde(self, key):
         if type(self.parced[key][0]) is str:
@@ -76,7 +80,9 @@ class Covid_Statistics:
         plt.ylabel('probability')
         plt.title(key)
         plt.plot(xs, density(xs))
-        plt.show()
+        plt.show(block=False)
+        plt.pause(3)
+        plt.close()
 
     def confid_int(self, key, sides, percent):
         if type(self.parced[key][0]) is str:
@@ -92,17 +98,17 @@ class Covid_Statistics:
         if sides == 'both':
             return sides, percent, m - h, m + h
 
-#test = Covid_Statistics()
-#test.parcer(r'C:/Users/HP/Desktop/covid_statistics.csv', 'RUS')
-#key = 'total_cases'
-#print('---keys---', test.keys())
-#print('---sample_mean---', test.sample_mean(key))
-#print('---sample_variance---', test.sample_variance(key))
-#print('---quantile---', test.quantile(key, 0.7))
-#test.emp_distr_func(key)
-#test.histogram(key)
-#test.kde(key)
-#print('---confid_int---', test.confid_int(key, 'both', 0.95))
+test = Covid_Statistics()
+test.parcer(r'covid_statistics.csv', 'RUS')
+key = 'total_cases'
+print('---keys---', test.keys())
+print('---sample_mean---', test.sample_mean(key))
+print('---sample_variance---', test.sample_variance(key))
+print('---quantile---', test.quantile(key, 0.7))
+print('---confid_int---', test.confid_int(key, 'both', 0.95))
+test.emp_distr_func(key)
+test.histogram(key)
+test.kde(key)
 
 class Test_Covid_Statistics(unittest.TestCase):
 
@@ -115,7 +121,7 @@ class Test_Covid_Statistics(unittest.TestCase):
     def test_quantile(self):
         self.assertEqual(test.quantile('list', 0.5), 3)
 
-#if __name__ == '__main__':
-#    test = Covid_Statistics()
-#    test.parced['list'].extend([1, 2, 3, 4, 5])
-#    unittest.main(verbosity=2)
+if __name__ == '__main__':
+    test = Covid_Statistics()
+    test.parced['list'].extend([1, 2, 3, 4, 5])
+    unittest.main(verbosity=2)
