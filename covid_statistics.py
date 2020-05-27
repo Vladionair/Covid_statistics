@@ -94,7 +94,7 @@ class Covid_Statistics:
 
 #test = Covid_Statistics()
 #test.parcer(r'C:/Users/HP/Desktop/covid_statistics.csv', 'RUS')
-#key = 'total_deaths'
+#key = 'total_cases'
 #print('---keys---', test.keys())
 #print('---sample_mean---', test.sample_mean(key))
 #print('---sample_variance---', test.sample_variance(key))
