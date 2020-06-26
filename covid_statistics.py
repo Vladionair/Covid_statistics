@@ -20,7 +20,7 @@ class Covid_Statistics:
                     if line[key] == country:
                         for item in line:
                             if item not in ('iso_code', 'location', 'date'):
-                                if line[item] not in ('', 'inconsistent units (COVID Tracking Project)', 'people tested',
+                                if line[item] not in ('', 'Europe', 'inconsistent units (COVID Tracking Project)', 'people tested',
                                                       'samples tested', 'tests performed', 'units unclear'):
                                     self.parced[item].append(float(line[item]))
                             else:
@@ -99,7 +99,7 @@ class Covid_Statistics:
             return sides, percent, m - h, m + h
 
 test = Covid_Statistics()
-test.parcer(r'covid_statistics.csv', 'RUS')
+test.parcer(r'owid-covid-data.csv', 'RUS')
 key = 'total_cases'
 print('---keys---', test.keys())
 print('---sample_mean---', test.sample_mean(key))
