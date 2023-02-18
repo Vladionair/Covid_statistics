@@ -13,7 +13,7 @@ class Covid_Statistics:
         self.parced = defaultdict(list)
 
     def parcer(self, source, country):
-        with open(source) as data:
+        with open(r'C:\Users\Пользователь\Desktop\owid-covid-data.csv') as data:
             file = csv.DictReader(data)
             for line in file:
                 for key in line:
@@ -55,8 +55,7 @@ class Covid_Statistics:
         plt.ylabel('probability')
         plt.step(sorted(self.parced[key]), levels)
         plt.show(block=False)
-        plt.pause(3)
-        plt.close()
+        plt.pause(10)
 
     def histogram(self, key):
         if type(self.parced[key][0]) is str:
@@ -66,8 +65,7 @@ class Covid_Statistics:
         plt.ylabel('probability')
         plt.hist(self.parced[key])
         plt.show(block=False)
-        plt.pause(3)
-        plt.close()
+        plt.pause(10)
 
     def kde(self, key):
         if type(self.parced[key][0]) is str:
@@ -81,8 +79,7 @@ class Covid_Statistics:
         plt.title(key)
         plt.plot(xs, density(xs))
         plt.show(block=False)
-        plt.pause(3)
-        plt.close()
+        plt.pause(10)
 
     def confid_int(self, key, sides, percent):
         if type(self.parced[key][0]) is str:
